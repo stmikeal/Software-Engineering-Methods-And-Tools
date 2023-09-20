@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<!--
+Студент, выполнивший работу: Казаченко Роман Олегович
+Группа: P3230
+Вариант: 30007
+-->
+
+<h:head>
+    <link rel="icon" href="resources/img/clown.png"/>
+    <link rel="stylesheet" type="text/css" href="resources/styles/style.css"/>
+    <title>UsefulApp</title>
+</h:head>
+
+<h:body>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <div id="container">
+        <div>
+            <h4 id="header">
+                Студент: Казаченко Роман Олегович, Группа: P3230, Вариант: 30307
+            </h4>
+        </div>
+        <div id="content">
+            <div id="leftbar">
+                <canvas id="canvas" width="300" height="300"/>
+            </div>
+            <div id="rightbar">
+                <h:form id="field-form" action="" method="POST">
+                    <fieldset style="border: none;">
+                        <label>Выберите координату X:</label>
+
+                        <h:panelGrid id="panelX" columns="1" style="margin-bottom: 10px">
+                            <p:inputText id="inputX" value="#{mainBean.x}"/>
+                            <p:slider for="inputX" minValue="-2" maxValue="2" step="0.5"
+                                      range="max"/>
+                        </h:panelGrid>
+
+                        <br/>
+
+
+                        <label>Введите координату Y [-5,3]:</label>
+                        <label for="inputY"/>
+                        <p:inputText class="input-text" id="inputY" type="text"
+                                     data-min="-5" data-max="3"
+                                     data-separator="."
+                                     value="#{mainBean.y}"
+                                     widgetVar="inputY">
+                            <f:validateDoubleRange minimum="-5" maximum="3"/>
+                        </p:inputText>
+
+                        <br/><br/>
+
+
+                        <label>Введите параметр R:</label>
+                        <h:outputLabel id="inputR" value="#{mainBean.r}" style="display: none"/>
+                        <label id="rLink">
+                            <h:commandLink class="commandLink" style="margin-right: 10px"
+                                           value="1" actionListener="#{mainBean.setR1}"/>
+                            <h:commandLink class="commandLink" style="margin-right: 10px"
+                                           value="2" actionListener="#{mainBean.setR2}"/>
+                            <h:commandLink class="commandLink" style="margin-right: 10px"
+                                           value="3" actionListener="#{mainBean.setR3}"/>
+                            <h:commandLink class="commandLink" style="margin-right: 10px"
+                                           value="4" actionListener="#{mainBean.setR4}"/>
+                            <h:commandLink class="commandLink" style="margin-right: 10px"
+                                           value="5" actionListener="#{mainBean.setR5}"/>
+                        </label>
+                        <br/><br/>
+
+                        <h:commandButton id="submit-button" class="button"
+                                         value="Отправить" action="#{mainBean.checkPoint()}"
+                        >
+                            <f:ajax execute="@form"
+                                    render="historyTable"
+                                    onevent="(data) => { if (data.status === 'success') {
+                                    loadPointsFromTable();
+                                }}"/>
+                        </h:commandButton>
+
+                        <h:commandButton id="reset-button" class="button"
+                                         value="Сбросить" action="#{mainBean.clearPoints()}"
+                        >
+                            <f:ajax execute="@form"
+                                    render="historyTable"
+                                    onevent="(data) => { if (data.status === 'success') {
+                                    loadPointsFromTable();
+                                }}"/>
+                        </h:commandButton>
+
+                        <h:commandButton id="invisible-button"
+                                         action="#{mainBean.nothing()}"
+                                         style="display:none;" onclick="console.log('clicked')">
+                            <f:ajax
+                                    render="historyTable"/>
+                        </h:commandButton>
+
+                    </fieldset>
+                </h:form>
+            </div>
+        </div>
+        <label style="margin-left: 45%;">Журнал запросов</label>
+        <br/><br/>
+        <!--        <table id="historyTable"/>-->
+
+        <h:dataTable id="historyTable" value="#{mainBean.pointList}" var="point">
+
+            <h:column>
+                <f:facet name="header">X</f:facet>
+                <h:outputText value="#{point.x}">
+                    <f:convertNumber pattern="#0.0000" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header"> Y </f:facet>
+                <h:outputText value="#{point.y}">
+                    <f:convertNumber pattern="#0.0000" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header"> Параметр R </f:facet>
+                <h:outputText value="#{point.r}">
+                    <f:convertNumber pattern="#0" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header"> Отправка </f:facet>
+                #{point.time}
+            </h:column>
+            <h:column>
+                <f:facet name="header"> Исполнение </f:facet>
+                <h:outputText value="#{point.script_time * 1000}">
+                    <f:convertNumber pattern="#0.0000" />
+                </h:outputText> ms
+            </h:column>
+            <h:column>
+                <f:facet name="header"> Результат </f:facet>
+                #{point.hit}
+            </h:column>
+        </h:dataTable>
+
+
+    </div>
+    <h:outputScript name="script.js"/>
+</h:body>
+
+</html>
+
+
+
+

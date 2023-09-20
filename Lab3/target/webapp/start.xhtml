@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <link rel="icon" href="resources/img/clown.png"/>
+    <link rel="stylesheet" type="text/css" href="resources/styles/style.css"/>
+    <title>UsefulApp</title>
+</h:head>
+<h:body>
+    <f:view>
+        <!-- Без формы компоненты работать не будут -->
+        <h:form>
+            <p:poll interval="10" update="timeMachine"/>
+            <h:outputText id="timeMachine" value="#{mainBean.dateTime}"/>
+            <p:commandButton value="GO to next page" action="nextPage"/>
+        </h:form>
+    </f:view>
+</h:body>
+</html>

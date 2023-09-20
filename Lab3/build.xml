@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="webapp" default="build">
+
+  <property file="build.properties"/>
+
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <pathelement location="lib/ant-contrib-1.0b3.jar"/>
+    </classpath>
+  </taskdef>
+
+
+  <path id="libs">
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="compile">
+
+    <mkdir dir="${target}/classes"/>
+    <javac srcdir="${src}/java" destdir="${target}/classes" includeantruntime="false"
+      encoding="utf-8">
+      <classpath>
+        <path refid="libs"/>
+      </classpath>
+    </javac>
+
+    <copy todir="${target}/classes">
+      <fileset dir="${src}/resources"/>
+    </copy>
+
+    <mkdir dir="${target}/webapp"/>
+
+    <copy todir="${target}/webapp">
+      <fileset dir="${src}/webapp"/>
+    </copy>
+  </target>
+
+  <target name="build" depends="compile">
+    <delete file="${file.jar}"/>
+    <jar destfile="${file.jar}" basedir="${target}/classes" >
+      <manifest>
+        <attribute name="Main-Class" value="Main"/>
+      </manifest>
+    </jar>
+
+  </target>
+
+  <target name="clean">
+    <delete dir="${target}"/>
+  </target>
+
+  <target name="test" depends="build">
+    <mkdir dir="${target}/tests"/>
+    <javac srcdir="${tests}/java" destdir="${target}/tests" includeantruntime="false">
+      <classpath>
+        <path refid="libs"/>
+        <pathelement location="${target}/classes"/>
+      </classpath>
+    </javac>
+
+    <mkdir dir="reports"/>
+    <junit fork="true" printsummary="on" failureproperty="tests.failed" >
+      <formatter type="xml"/>
+      <classpath>
+        <pathelement location="${target}/classes"/>
+        <pathelement location="${target}/tests"/>
+      </classpath>
+      <batchtest todir="reports">
+        <fileset dir="${test}/java" includes="*Test*.java"/>
+      </batchtest>
+    </junit>
+
+  </target>
+
+  <target name="music" depends="build">
+    <sound>
+      <success source="sounds" />
+    </sound>
+  </target>
+
+  <target name="qr">
+    <mkdir dir="qr"/>
+    <copy file="application.iml" tofile="qr/qr_code.bmp"/>
+  </target>
+
+
+  <target name="report" depends="test" unless="${tests.failed}">
+
+    <exec executable="git">
+      <arg value="add"/>
+      <arg value="reports/*.xml"/>
+    </exec>
+
+    <exec executable="git">
+      <arg value="commit"/>
+    </exec>
+
+  </target>
+
+</project>
